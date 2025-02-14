@@ -1,0 +1,2 @@
+node_modules/
+.idea/npm install gh-pages --save-dev

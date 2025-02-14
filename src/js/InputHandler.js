@@ -7,11 +7,12 @@ export class InputHandler {
 
         document.addEventListener("keydown", (event) => this.handleKey(event));
 
-        document.addEventListener("touchstart", (event) => this.handleTouchStart(event));
-        document.addEventListener("touchend", (event) => this.handleTouchEnd(event));
+        document.addEventListener("touchmove", (event) => {
+            event.preventDefault();
+        }, {passive: false});
 
-        document.addEventListener("mousedown", (event) => this.handleMouseStart(event));
-        document.addEventListener("mouseup", (event) => this.handleMouseEnd(event));
+        document.addEventListener("touchstart", this.handleTouchStart.bind(this));
+        document.addEventListener("touchend", this.handleTouchEnd.bind(this));
     }
 
     handleKey(event) {
@@ -19,7 +20,7 @@ export class InputHandler {
         if (!validKeys.includes(event.key)) return;
 
         event.preventDefault();
-        this.handleMove(event.key.replace("Arrow", "").toLowerCase  ());
+        this.handleMove(event.key.replace("Arrow", "").toLowerCase());
     }
 
     handleTouchStart(event) {
@@ -30,15 +31,6 @@ export class InputHandler {
     handleTouchEnd(event) {
         let touch = event.changedTouches[0];
         this.detectSwipe(touch.clientX, touch.clientY);
-    }
-
-    handleMouseStart(event) {
-        this.startX = event.clientX;
-        this.startY = event.clientY;
-    }
-
-    handleMouseEnd(event) {
-        this.detectSwipe(event.clientX, event.clientY);
     }
 
     detectSwipe(endX, endY) {
