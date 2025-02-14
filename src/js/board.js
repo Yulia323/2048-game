@@ -22,7 +22,7 @@ export class Board {
     getEmptyCells() {
         return this.grid.reduce((acc, row, rowIndex) => {
             row.forEach((cell, colIndex) => {
-                if (!cell) acc.push({ row: rowIndex, col: colIndex });
+                if (!cell) acc.push({row: rowIndex, col: colIndex});
             });
             return acc;
         }, []);
@@ -58,24 +58,20 @@ export class Board {
         let newGrid = grid.map(row => {
             let filtered = row.filter(tile => tile);
             let newRow = [];
-            let points = 0;
 
             for (let i = 0; i < filtered.length; i++) {
-                if (filtered[i + 1] && filtered[i].value === filtered[i + 1].value) {
-                    let mergedTile = new Tile(filtered[i].value * 2, filtered[i].row, filtered[i].col);
-                    newRow.push(mergedTile);
-                    points += mergedTile.value;
+                if (filtered[i + 1]?.value === filtered[i].value) {
+                    newRow.push(new Tile(filtered[i].value * 2, filtered[i].row, filtered[i].col));
+                    this.updateScore(filtered[i].value * 2);
                     i++;
                 } else {
                     newRow.push(filtered[i]);
                 }
             }
 
-            while (newRow.length < this.size) newRow.push(null);
-            if (points) this.updateScore(points);
-
-            return newRow;
+            return [...newRow, ...Array(this.size - newRow.length).fill(null)];
         });
+
 
         if (direction === "right" || direction === "down") newGrid = newGrid.map(row => row.reverse());
         if (isVertical) newGrid = this.transpose(newGrid);
